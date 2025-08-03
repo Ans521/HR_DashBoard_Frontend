@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import Image from "next/image";
 import api from "@/lib/axiosInstance";
 import { addUser } from "@/utils/store/user";
+import { setSideBar } from "@/utils/store/sidebar";
 
 const Home = () => {
   const [isLoginForm, setIsLoginForm] = useState(false);
@@ -34,7 +35,10 @@ const Home = () => {
       if(res.status === 200) {
         alert("User logged in successfully");
         dispatch(addUser(res.data.data));
-        router.push("/candidates");
+        setTimeout(() => {
+          router.push("/candidates");
+        }, 500); 
+        dispatch(setSideBar(true)); 
         console.log(res.data.data);
       }
     } catch (error : any) {

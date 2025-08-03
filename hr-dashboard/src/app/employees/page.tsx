@@ -39,7 +39,7 @@ const Employees: React.FC = () => {
       console.log(err);
     }
   };
-  
+
   const updateEmployeeData = async () => {
     setError("");
 
@@ -71,11 +71,11 @@ const Employees: React.FC = () => {
 
     } catch (err : unknown) {
       if (err instanceof AxiosError) {
-    console.log(err);
-    setError(err.response?.data?.message || "Something went wrong");
+      console.log(err);
+      setError(err.response?.data?.message || "Something went wrong");
   } else {
-    console.error("Unexpected error:", err);
-    setError("Something went wrong");
+      console.error("Unexpected error:", err);
+      setError("Something went wrong");
   }
 
     }

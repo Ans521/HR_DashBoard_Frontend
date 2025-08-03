@@ -23,6 +23,7 @@ const LeftPanel: React.FC = () => {
       if(res.status === 200) {
         alert("User logged out successfully");
         setShowLogout(false);
+        dispatch(setSideBar(false));
         router.push("/");
       }
     } catch (error) {

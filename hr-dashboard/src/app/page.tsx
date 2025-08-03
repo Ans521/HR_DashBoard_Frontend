@@ -1,10 +1,13 @@
-'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+"use client";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { useDispatch } from "react-redux";
 import Image from "next/image";
-import axios from "axios";
-import styles from './page.module.css';
+import api from "@/lib/axiosInstance";
+import { addUser } from "@/utils/store/user";
+
 const Home = () => {
   const [isLoginForm, setIsLoginForm] = useState(false);
   const [name, setName] = useState("");
@@ -13,26 +16,30 @@ const Home = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const handleLogin = async () => {
     if (!email || !password) {
       setError("Please fill all the fields");
       return;
     }
+    const payload = { email, password };
     try {
       setError("");
-      const res = await axios.post(
+      const res = await api.post(
         "/login",
-        { email, password },
+        payload,
         { withCredentials: true }
       );
-      // navigate("/candidates");
-      // dispatch(addUser(res.data.data));
-      // console.log(res.data.data);
-    } catch (error) {
-      // console.log(error);
-      // setError(error.response.data.message);
+      if(res.status === 200) {
+        alert("User logged in successfully");
+        dispatch(addUser(res.data.data));
+        router.push("/candidates");
+        console.log(res.data.data);
+      }
+    } catch (error : any) {
+      console.log(error);
+      setError(error.response.data.message);
     }
   };
 
@@ -47,17 +54,20 @@ const Home = () => {
     }
     try {
       setError("");
-      const res = await axios.post(
+      const res = await api.post(
         "/signup",
         { name, email, password },
         { withCredentials: true }
       );
-      // dispatch(addUser(res.data.data));
-      // console.log(res.data.data);
-      // navigate("/candidates");
-    } catch (error) {
+      console.log("res.data.data", res.data.data);
+      if(res.status === 200) {
+        alert("User created successfully");
+      }
+      dispatch(addUser(res.data.data));
+      router.push("/candidates");
+    } catch (error : any) {
       console.log(error);
-      // setError(error.response.data.message);
+      setError(error.response.data.message);
     }
   };
 
@@ -68,35 +78,33 @@ const Home = () => {
 
   return (
     <section className="auth-container">
-      <div className="logo-container" style={{ position: "relative"}}>
+      <div className="logo-container" style={{ position: "relative" }}>
         <Image className="logo" src="/images/Logo.png" width={100} height={30} alt="logo" />
       </div>
 
       <div className="secondary-container">
-      <div className="left-container">
-  <div 
-    style={{ 
-      position: "relative", 
-      height: "200px",
-      width: "400px"
-    }}
-  >
-    <Image src="/images/auth-left.png" fill alt="logo" />
-  </div>
+        <div className="left-container">
+          <div
+            style={{
+              position: "relative",
+              height: "200px",
+              width: "400px"
+            }}
+          >
+            <Image src="/images/auth-left.png" fill alt="logo" />
+          </div>
 
-  <div className="left-text">
-    <h3 className="left-heading">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-    </h3>
-    <p>
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-      aliquip ex ea commodo consequat.
-    </p>
-  </div>
-</div>
-
-
+          <div className="left-text">
+            <h3 className="left-heading">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            </h3>
+            <p>
+              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+              aliquip ex ea commodo consequat.
+            </p>
+          </div>
+        </div>
         <div className="right-container">
           <h1>Welcome to Dashboard</h1>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -106,6 +114,7 @@ const Home = () => {
                   Full Name<span>*</span>
                 </label>
                 <input
+                  suppressHydrationWarning 
                   type="text"
                   name="name"
                   value={name}
@@ -120,6 +129,7 @@ const Home = () => {
                 Email Address<span>*</span>
               </label>
               <input
+              suppressHydrationWarning 
                 type="text"
                 name="email"
                 value={email}
@@ -133,6 +143,7 @@ const Home = () => {
                 Password<span>*</span>
               </label>
               <input
+                suppressHydrationWarning 
                 type="text"
                 name="password"
                 value={password}

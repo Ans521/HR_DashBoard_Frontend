@@ -50,12 +50,6 @@ const LeftPanel: React.FC = () => {
             height={50}
           />
         </Link>
-
-        {typeof window !== "undefined" && window.innerWidth <= 1270 ? (
-          <div onClick={closeSideBar} className="cursor-pointer text-xl">
-            ✖
-          </div>
-        ) : null}
       </div>
     <div>
         <input
